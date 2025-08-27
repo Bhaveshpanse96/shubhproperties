@@ -153,6 +153,7 @@
                                 <path d="M28 8H12a4 4 0 00-4 4v20m32-12v8m0 0v8a4 4 0 01-4 4H12a4 4 0 01-4-4v-4m32-4l-3.172-3.172a4 4 0 00-5.656 0L28 28M8 32l9.172-9.172a4 4 0 015.656 0L28 28m0 0l4 4m4-24h8m-4-4v8m-12 4h.02" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
                             </svg>
                             <div class="flex text-sm text-gray-600">
+                                <!-- The 'multiple' attribute allows selecting more than one file -->
                                 <label for="imageUpload" class="relative cursor-pointer bg-white rounded-md font-medium text-blue-600 hover:text-blue-500 focus-within:outline-none focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-blue-500">
                                     <span>Upload files</span>
                                     <input id="imageUpload" name="imageUpload" type="file" class="sr-only" accept="image/*" multiple required>
@@ -163,6 +164,7 @@
                         </div>
                     </div>
                 </div>
+                <!-- Image preview container will show thumbnails of uploaded images -->
                 <div id="image-preview-container" class="mt-4 hidden flex space-x-2 overflow-x-auto">
                 </div>
 
@@ -229,22 +231,16 @@
                     </div>
                 </div>
 
-                <!-- Bedrooms & Bathrooms -->
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div>
-                        <label for="bedrooms" class="block text-sm font-medium text-gray-700 mb-1">Bedrooms:</label>
-                        <input type="number" id="bedrooms" name="bedrooms" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2 focus:ring-blue-500 focus:border-blue-500" min="0">
-                    </div>
-                    <div>
-                        <label for="bathrooms" class="block text-sm font-medium text-gray-700 mb-1">Bathrooms:</label>
-                        <input type="number" id="bathrooms" name="bathrooms" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2 focus:ring-blue-500 focus:border-blue-500" min="0">
-                    </div>
-                </div>
-
                 <!-- Property Description -->
                 <div>
                     <label for="description" class="block text-sm font-medium text-gray-700 mb-1">Property Description:</label>
                     <textarea id="description" name="description" rows="4" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2 focus:ring-blue-500 focus:border-blue-500" placeholder="Provide a detailed description of your property, including key features, amenities, and any unique selling points." required></textarea>
+                </div>
+                
+                <!-- Google Maps Link -->
+                <div>
+                    <label for="mapLink" class="block text-sm font-medium text-gray-700 mb-1">Google Maps Link:</label>
+                    <input type="url" id="mapLink" name="mapLink" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2 focus:ring-blue-500 focus:border-blue-500" placeholder="e.g., https://goo.gl/maps/..." required>
                 </div>
 
                 <!-- Contact Information -->
@@ -322,7 +318,9 @@
                 description: "Stunning modern villa with breathtaking city views, infinity pool, and smart home technology. Perfect for luxurious living.",
                 agent: "Luxury Estates Inc.",
                 isLiked: false,
-                phone: "+1234567890"
+                isPrivate: false, // Default properties are not private
+                phone: "+1234567890",
+                mapLink: "https://goo.gl/maps/b9yWv7f2Y3Z2"
             },
             {
                 id: 2,
@@ -335,7 +333,9 @@
                 description: "Charming family home in a quiet, tree-lined neighborhood. Spacious backyard, top-rated schools nearby.",
                 agent: "Greenbelt Realty",
                 isLiked: false,
-                phone: "+1234567890"
+                isPrivate: false, // Default properties are not private
+                phone: "+1234567890",
+                mapLink: "https://goo.gl/maps/c9xXw8g3Z4A3"
             },
             {
                 id: 3,
@@ -348,7 +348,9 @@
                 description: "Vibrant downtown loft with exposed brick, high ceilings, and panoramic city views. Steps away from galleries and restaurants.",
                 agent: "Urban Living Co.",
                 isLiked: false,
-                phone: "+1234567890"
+                isPrivate: false, // Default properties are not private
+                phone: "+1234567890",
+                mapLink: "https://goo.gl/maps/d0yYy9h4A5B4"
             }
         ];
         let isAdminLoggedIn = false;
@@ -385,7 +387,13 @@
         function renderProperties() {
             const propertyFeed = document.getElementById('home-view');
             propertyFeed.innerHTML = ''; // Clear existing content
-            properties.forEach(property => {
+
+            // Filter properties based on admin status
+            const propertiesToRender = isAdminLoggedIn
+                ? properties // Show all properties if admin is logged in
+                : properties.filter(p => !p.isPrivate); // Only show non-private properties for regular users
+
+            propertiesToRender.forEach(property => {
                 const propertyCard = document.createElement('div');
                 propertyCard.className = 'bg-white rounded-lg shadow-md overflow-hidden transform transition duration-300 hover:scale-[1.01]';
                 
@@ -431,11 +439,23 @@
                     `;
                 }
 
-                propertyCard.innerHTML = `
-                    ${sliderHtml}
-                    <div class="p-5">
-                        <h2 class="text-xl font-semibold text-gray-800 mb-2">${property.location}</h2>
-                        <p class="text-2xl font-bold text-blue-600 mb-3">${property.price}</p>
+                let mapButtonHtml = '';
+                if (property.mapLink) {
+                    mapButtonHtml = `
+                        <a href="${property.mapLink}" target="_blank" class="flex items-center text-gray-600 hover:text-blue-500 transition duration-200 focus:outline-none">
+                            <svg class="w-6 h-6 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path>
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                            </svg>
+                            <span class="font-medium">View on Map</span>
+                        </a>
+                    `;
+                }
+                
+                // Conditionally render beds and baths if they exist in the property object
+                let bedsAndBathsHtml = '';
+                if (property.beds && property.baths) {
+                     bedsAndBathsHtml = `
                         <div class="flex items-center text-gray-600 text-sm mb-4">
                             <span class="mr-4 flex items-center">
                                 <svg class="w-4 h-4 mr-1 text-gray-500" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path d="M10 2a2 2 0 00-2 2v1H5a2 2 0 00-2 2v2a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-3V4a2 2 0 00-2-2h-2zM5 9h10v6a2 2 0 01-2 2H7a2 2 0 01-2-2V9z"></path></svg>
@@ -450,6 +470,24 @@
                                 ${property.sqft} sqft
                             </span>
                         </div>
+                     `;
+                } else {
+                     bedsAndBathsHtml = `
+                        <div class="flex items-center text-gray-600 text-sm mb-4">
+                            <span class="flex items-center">
+                                <svg class="w-4 h-4 mr-1 text-gray-500" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path d="M9 2a1 1 0 000 2h2a1 1 0 100-2H9z"></path><path fill-rule="evenodd" d="M4 5a2 2 0 012-2 3 3 0 003 3h2a3 3 0 003-3 2 2 0 012 2v11a2 2 0 01-2 2H6a2 2 0 01-2-2V5zm3 4a1 1 0 000 2h.01a1 1 0 100-2H7zm3 0a1 1 0 000 2h.01a1 1 0 100-2H10zm3 0a1 1 0 000 2h.01a1 1 0 100-2H13zm-3 4a1 1 0 000 2h.01a1 1 0 100-2H10zm3 0a1 1 0 000 2h.01a1 1 0 100-2H13z" clip-rule="evenodd"></path></svg>
+                                ${property.sqft} sqft
+                            </span>
+                        </div>
+                     `;
+                }
+
+                propertyCard.innerHTML = `
+                    ${sliderHtml}
+                    <div class="p-5">
+                        <h2 class="text-xl font-semibold text-gray-800 mb-2">${property.location}</h2>
+                        <p class="text-2xl font-bold text-blue-600 mb-3">${property.price}</p>
+                        ${bedsAndBathsHtml}
                         <p class="text-gray-700 text-base mb-4">${property.description}</p>
                         <p class="text-gray-500 text-sm mb-4">Listed by: <span class="font-medium text-gray-700">${property.agent}</span></p>
                         <div class="flex items-center space-x-4">
@@ -471,6 +509,7 @@
                                 </svg>
                                 <span class="font-medium">WhatsApp</span>
                             </a>
+                            ${mapButtonHtml}
                             ${deleteButtonHtml}
                         </div>
                     </div>
@@ -566,13 +605,13 @@
                 imageUrls: uploadedImageUrls,
                 location: document.getElementById('locality').value + ', ' + document.getElementById('city').value,
                 price: document.getElementById('price').value,
-                beds: document.getElementById('bedrooms').value || 'N/A',
-                baths: document.getElementById('bathrooms').value || 'N/A',
                 sqft: document.getElementById('area').value || 'N/A',
                 description: document.getElementById('description').value || 'No description provided.',
                 agent: document.getElementById('fullName').value || 'Agent Name',
                 isLiked: false,
-                phone: document.getElementById('phone').value
+                isPrivate: true, // This is the new property added for admin-only viewing
+                phone: document.getElementById('phone').value,
+                mapLink: document.getElementById('mapLink').value // New field for Google Maps link
             };
 
             properties.push(newProperty);
