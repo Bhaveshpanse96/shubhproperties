@@ -3,729 +3,273 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Shubh Properties</title>
-    <!-- Tailwind CSS CDN -->
+    <title></title>
+    <!-- Load Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Inter Font -->
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Configure Tailwind to use a clean font and apply modern styles -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'primary-blue': '#1e40af', // Darker Blue
+                        'secondary-green': '#059669', // Emerald Green for accents
+                        'bg-light': '#f8fafc', // Slate 50
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    },
+                }
+            }
+        }
+    </script>
     <style>
+        /* Custom styles for subtle visual improvements */
         body {
             font-family: 'Inter', sans-serif;
-            background-color: #f0f2f5; /* Light gray background */
+            background-color: #f8fafc; /* bg-light */
         }
-        /* Custom scrollbar for better aesthetics */
-        ::-webkit-scrollbar {
-            width: 8px;
+        .hero-background {
+            /* Using a placeholder that suggests a professional, trustworthy image */
+            background-image: url('https://placehold.co/1200x600/1e40af/ffffff?text=Shubh+Properties+Consultancy');
+            background-size: cover;
+            background-position: center;
+            height: 50vh; /* Adjust height for responsiveness */
+            min-height: 400px;
         }
-        ::-webkit-scrollbar-track {
-            background: #f1f1f1;
-            border-radius: 10px;
+        .property-card {
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
         }
-        ::-webkit-scrollbar-thumb {
-            background: #888;
-            border-radius: 10px;
-        }
-        ::-webkit-scrollbar-thumb:hover {
-            background: #555;
-        }
-        .modal {
-            display: none; /* Hidden by default */
-            position: fixed; /* Stay in place */
-            z-index: 1000; /* Sit on top */
-            left: 0;
-            top: 0;
-            width: 100%; /* Full width */
-            height: 100%; /* Full height */
-            overflow: auto; /* Enable scroll if needed */
-            background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
-            justify-content: center;
-            align-items: center;
-        }
-        .modal-content {
-            background-color: #fefefe;
-            margin: auto;
-            padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-            max-width: 500px;
-            width: 90%;
-            position: relative;
-        }
-        .close-button {
-            color: #aaa;
-            float: right;
-            font-size: 28px;
-            font-weight: bold;
-            position: absolute;
-            top: 10px;
-            right: 15px;
-        }
-        .close-button:hover,
-        .close-button:focus {
-            color: black;
-            text-decoration: none;
-            cursor: pointer;
-        }
-        .image-preview-item {
-            display: inline-block;
-            margin-right: 8px;
-            position: relative;
-            overflow: hidden;
-            border-radius: 8px;
-            width: 100px;
-            height: 100px;
-        }
-        .image-preview-item img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
-        .slider-container {
-            position: relative;
-            width: 100%;
-            overflow: hidden;
-        }
-        .slider-images {
-            display: flex;
-            transition: transform 0.5s ease-in-out;
-        }
-        .slider-images img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
-        .slider-nav button {
-            position: absolute;
-            top: 50%;
-            transform: translateY(-50%);
-            background-color: rgba(0, 0, 0, 0.5);
-            color: white;
-            border: none;
-            padding: 10px;
-            cursor: pointer;
-            z-index: 10;
-        }
-        .slider-nav .prev {
-            left: 10px;
-        }
-        .slider-nav .next {
-            right: 10px;
+        .property-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 15px rgba(0, 0, 0, 0.1);
         }
     </style>
 </head>
-<body class="min-h-screen flex flex-col">
+<body>
 
-    <!-- Header -->
-    <header class="bg-white shadow-sm py-4 px-6 fixed top-0 left-0 w-full z-10">
-        <div class="container mx-auto flex justify-between items-center max-w-4xl">
-            <h1 class="text-2xl font-bold text-gray-800">Shubh Properties</h1>
-            <nav>
-                <ul class="flex space-x-4 items-center">
-                    <li><button id="home-link" class="text-gray-600 hover:text-blue-600 font-medium">Home</button></li>
-                    <li><button id="post-link" class="text-gray-600 hover:text-blue-600 font-medium hidden">Post Property</button></li>
-                    <li><a href="#" class="text-gray-600 hover:text-blue-600 font-medium">Contact</a></li>
-                    <li><button id="admin-login-btn" class="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 transition duration-200">Admin Login</button></li>
-                    <li><button id="admin-logout-btn" class="bg-red-600 text-white px-4 py-2 rounded-md hover:bg-red-700 transition duration-200 hidden">Logout</button></li>
-                </ul>
+    <!-- Navigation Bar - Branded for Shubh Properties -->
+    <header class="bg-white shadow-md sticky top-0 z-10">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex justify-between items-center h-16">
+            <h1 class="text-3xl font-extrabold text-primary-blue">
+                <span class="text-secondary-green">Shubh</span> Properties
+            </h1>
+            <!-- Desktop Menu -->
+            <nav class="hidden md:flex space-x-8">
+                <a href="#" class="text-gray-600 hover:text-primary-blue font-medium transition duration-150">Buy</a>
+                <a href="#" class="text-gray-600 hover:text-primary-blue font-medium transition duration-150">Documentation Services</a>
+                <a href="#" class="text-gray-600 hover:text-primary-blue font-medium transition duration-150">Consultancy</a>
+                <a href="#" class="text-gray-600 hover:text-primary-blue font-medium transition duration-150">Contact</a>
             </nav>
+            <!-- CTA Button - Updated to link directly to the footer contact section -->
+            <a href="#footer-contact" class="hidden md:block bg-secondary-green text-white px-4 py-2 rounded-lg font-semibold hover:bg-opacity-90 transition duration-150 shadow-md">
+                Contact Us Directly
+            </a>
+            <!-- Mobile Menu Button -->
+            <button class="md:hidden text-gray-700 focus:outline-none">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path></svg>
+            </button>
         </div>
     </header>
 
-    <!-- Main Content Area -->
-    <main class="flex-grow container mx-auto p-4 mt-20 mb-8 max-w-4xl">
-
-        <!-- Home/Property Feed View -->
-        <div id="home-view" class="grid grid-cols-1 gap-8">
-            <!-- Property cards will be injected here by JavaScript -->
+    <!-- Hero Section and Search Bar - Headline Updated -->
+    <main>
+        <div class="hero-background  justify-center p-4">
+            <div class="text-center w-full max-w-4xl">
+                <h2 class="text-4xl sm:text-5xl font-bold text-white mb-6 drop-shadow-lg">
+                    Your Trusted Partner in Bhopal 
+                </h2>
+                <!-- Search functionality removed as requested -->
+            </div>
         </div>
 
-        <!-- Post Property View -->
-        <div id="post-view" class="hidden bg-white p-6 rounded-lg shadow-md max-w-2xl mx-auto">
-            <h2 class="text-2xl font-bold text-gray-800 mb-6 text-center">Tell us about your property</h2>
-            <form id="post-property-form" class="space-y-6">
+        <!-- Featured Listings Section -->
+        <section class="py-16 bg-bg-light">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <h3 class="text-3xl font-bold text-gray-900 mb-10 text-center">Featured New Listings & Opportunities</h3>
 
-                <!-- Image Upload Section -->
-                <div>
-                    <label for="imageUpload" class="block text-sm font-medium text-gray-700 mb-1">Upload Images (Max 4):</label>
-                    <div class="mt-1 flex justify-center px-6 pt-5 pb-6 border-2 border-gray-300 border-dashed rounded-md">
-                        <div class="space-y-1 text-center">
-                            <svg class="mx-auto h-12 w-12 text-gray-400" stroke="currentColor" fill="none" viewBox="0 0 48 48" aria-hidden="true">
-                                <path d="M28 8H12a4 4 0 00-4 4v20m32-12v8m0 0v8a4 4 0 01-4 4H12a4 4 0 01-4-4v-4m32-4l-3.172-3.172a4 4 0 00-5.656 0L28 28M8 32l9.172-9.172a4 4 0 015.656 0L28 28m0 0l4 4m4-24h8m-4-4v8m-12 4h.02" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
-                            </svg>
-                            <div class="flex text-sm text-gray-600">
-                                <!-- The 'multiple' attribute allows selecting more than one file -->
-                                <label for="imageUpload" class="relative cursor-pointer bg-white rounded-md font-medium text-blue-600 hover:text-blue-500 focus-within:outline-none focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-blue-500">
-                                    <span>Upload files</span>
-                                    <input id="imageUpload" name="imageUpload" type="file" class="sr-only" accept="image/*" multiple required>
-                                </label>
-                                <p class="pl-1">or drag and drop</p>
+                <!-- Listings Grid -->
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+
+                    <!-- Property Card 1 - Updated to reflect local focus (Example) -->
+                    <div class="property-card bg-white rounded-xl overflow-hidden shadow-lg border border-gray-100">
+                        <div class="relative">
+                            <img src="WhatsApp Image 2025-02-02 at 15.08.39_1927d0e7.jpg" alt="Modern Minimalist Villa" class="w-full h-48 object-cover">
+                            <span class="absolute top-3 right-3 bg-primary-blue text-white text-sm font-bold px-3 py-1 rounded-full shadow-md">NEW</span>
+                        </div>
+                        <div class="p-6">
+                            <h4 class="text-2xl font-bold text-gray-900 mb-2">₹75,00,000</h4>
+                            <p class="text-gray-500 mb-4">Prime Location, Arera Colony, Bhopal</p>
+                            <div class="flex justify-between items-center text-gray-600 border-t pt-4">
+                                <span class="flex items-center space-x-2">
+                                    <svg class="w-5 h-5 text-secondary-green" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0h6m-6 0h-2a1 1 0 00-1 1v2a1 1 0 001 1h10a1 1 0 001-1v-2a1 1 0 00-1-1h-2"></path></svg>
+                                    <span>3 Bed</span>
+                                </span>
+                                <span class="flex items-center space-x-2">
+                                    <svg class="w-5 h-5 text-secondary-green" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0l.969-.372m6.062 0L19 7m-6 0a3 3 0 00-6 0m6 0a3 3 0 01-6 0"></path></svg>
+                                    <span>3 Bath</span>
+                                </span>
+                                <span class="flex items-center space-x-2">
+                                    <svg class="w-5 h-5 text-secondary-green" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 8h16M4 16h16"></path></svg>
+                                    <span>1,600 sqft</span>
+                                </span>
                             </div>
-                            <p class="text-xs text-gray-500">PNG, JPG, GIF up to 10MB each</p>
+                            <!-- Location Button 1 -->
+                            <a href="#map-section" class="mt-4 block w-full text-center bg-primary-blue text-white py-2 rounded-lg font-semibold hover:bg-blue-700 transition duration-150">
+                                View Location on Map
+                            </a>
                         </div>
                     </div>
-                </div>
-                <!-- Image preview container will show thumbnails of uploaded images -->
-                <div id="image-preview-container" class="mt-4 hidden flex space-x-2 overflow-x-auto">
-                </div>
-
-                <!-- Property Type -->
-                <div>
-                    <label for="propertyType" class="block text-sm font-medium text-gray-700 mb-1">Property Type:</label>
-                    <select id="propertyType" name="propertyType" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2 focus:ring-blue-500 focus:border-blue-500" required>
-                        <option value="">Select Property Type</option>
-                        <option value="residential">Residential</option>
-                        <option value="commercial">Commercial</option>
-                        <option value="land">Land</option>
-                    </select>
-                </div>
-
-                <!-- Transaction Type -->
-                <div>
-                    <label for="transactionType" class="block text-sm font-medium text-gray-700 mb-1">I want to:</label>
-                    <div class="flex space-x-4 mt-1">
-                        <label class="inline-flex items-center">
-                            <input type="radio" name="transactionType" value="sell" class="form-radio text-blue-600" required>
-                            <span class="ml-2 text-gray-700">Sell</span>
-                        </label>
-                        <label class="inline-flex items-center">
-                            <input type="radio" name="transactionType" value="rent" class="form-radio text-blue-600">
-                            <span class="ml-2 text-gray-700">Rent</span>
-                        </label>
-                    </div>
-                </div>
-
-                <!-- Property Sub-type (Dynamic - can be expanded) -->
-                <div>
-                    <label for="propertySubType" class="block text-sm font-medium text-gray-700 mb-1">Property Sub-type:</label>
-                    <select id="propertySubType" name="propertySubType" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2 focus:ring-blue-500 focus:border-blue-500" required>
-                        <option value="">Select Sub-type</option>
-                        <option value="apartment">Apartment</option>
-                        <option value="villa">Villa/House</option>
-                        <option value="plot">Plot/Land</option>
-                        <option value="office">Office Space</option>
-                        <option value="shop">Shop/Showroom</option>
-                    </select>
-                </div>
-
-                <!-- Location -->
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div>
-                        <label for="city" class="block text-sm font-medium text-gray-700 mb-1">City:</label>
-                        <input type="text" id="city" name="city" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2 focus:ring-blue-500 focus:border-blue-500" placeholder="e.g., Bhopal" required>
-                    </div>
-                    <div>
-                        <label for="locality" class="block text-sm font-medium text-gray-700 mb-1">Locality/Area:</label>
-                        <input type="text" id="locality" name="locality" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2 focus:ring-blue-500 focus:border-blue-500" placeholder="e.g., Shahjahanabad" required>
-                    </div>
-                </div>
-
-                <!-- Area & Price -->
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div>
-                        <label for="area" class="block text-sm font-medium text-gray-700 mb-1">Area (Sqft/Sqyd):</label>
-                        <input type="number" id="area" name="area" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2 focus:ring-blue-500 focus:border-blue-500" placeholder="e.g., 1500" min="1" required>
-                    </div>
-                    <div>
-                        <label for="price" class="block text-sm font-medium text-gray-700 mb-1">Expected Price (INR):</label>
-                        <input type="text" id="price" name="price" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2 focus:ring-blue-500 focus:border-blue-500" placeholder="e.g., 75,00,000" required>
-                    </div>
-                </div>
-
-                <!-- Property Description -->
-                <div>
-                    <label for="description" class="block text-sm font-medium text-gray-700 mb-1">Property Description:</label>
-                    <textarea id="description" name="description" rows="4" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2 focus:ring-blue-500 focus:border-blue-500" placeholder="Provide a detailed description of your property, including key features, amenities, and any unique selling points." required></textarea>
-                </div>
-                
-                <!-- Google Maps Link -->
-                <div>
-                    <label for="mapLink" class="block text-sm font-medium text-gray-700 mb-1">Google Maps Link:</label>
-                    <input type="url" id="mapLink" name="mapLink" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2 focus:ring-blue-500 focus:border-blue-500" placeholder="e.g., https://goo.gl/maps/..." required>
-                </div>
-
-                <!-- Contact Information -->
-                <div>
-                    <h3 class="text-lg font-semibold text-gray-800 mb-3">Your Contact Information</h3>
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <div>
-                            <label for="fullName" class="block text-sm font-medium text-gray-700 mb-1">Full Name:</label>
-                            <input type="text" id="fullName" name="fullName" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2 focus:ring-blue-500 focus:border-blue-500" required>
+                     <!-- Property Card 1 - Updated to reflect local focus (Example) -->
+                    <div class="property-card bg-white rounded-xl overflow-hidden shadow-lg border border-gray-100">
+                        <div class="relative">
+                            <img src="C:\Users\Arjun\OneDrive\Desktop\shubh.properties\WhatsApp Image 2025-02-02 at 15.08.39_1927d0e7.jpg" alt="Modern Minimalist Villa" class="w-full h-48 object-cover">
+                            <span class="absolute top-3 right-3 bg-primary-blue text-white text-sm font-bold px-3 py-1 rounded-full shadow-md">NEW</span>
                         </div>
-                        <div>
-                            <label for="email" class="block text-sm font-medium text-gray-700 mb-1">Email:</label>
-                            <input type="email" id="email" name="email" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2 focus:ring-blue-500 focus:border-blue-500" required>
-                        </div>
-                        <div>
-                            <label for="phone" class="block text-sm font-medium text-gray-700 mb-1">Phone Number:</label>
-                            <input type="tel" id="phone" name="phone" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2 focus:ring-blue-500 focus:border-blue-500" placeholder="e.g., +91-9876543210" required>
+                        <div class="p-6">
+                            <h4 class="text-2xl font-bold text-gray-900 mb-2">₹75,00,000</h4>
+                            <p class="text-gray-500 mb-4">Prime Location, Arera Colony, Bhopal</p>
+                            <div class="flex justify-between items-center text-gray-600 border-t pt-4">
+                                <span class="flex items-center space-x-2">
+                                    <svg class="w-5 h-5 text-secondary-green" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0h6m-6 0h-2a1 1 0 00-1 1v2a1 1 0 001 1h10a1 1 0 001-1v-2a1 1 0 00-1-1h-2"></path></svg>
+                                    <span>3 Bed</span>
+                                </span>
+                                <span class="flex items-center space-x-2">
+                                    <svg class="w-5 h-5 text-secondary-green" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0l.969-.372m6.062 0L19 7m-6 0a3 3 0 00-6 0m6 0a3 3 0 01-6 0"></path></svg>
+                                    <span>3 Bath</span>
+                                </span>
+                                <span class="flex items-center space-x-2">
+                                    <svg class="w-5 h-5 text-secondary-green" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 8h16M4 16h16"></path></svg>
+                                    <span>1,600 sqft</span>
+                                </span>
+                            </div>
+                            <!-- Location Button 1 -->
+                            <a href="#map-section" class="mt-4 block w-full text-center bg-primary-blue text-white py-2 rounded-lg font-semibold hover:bg-blue-700 transition duration-150">
+                                View Location on Map
+                            </a>
                         </div>
                     </div>
+
+
+                    <!-- Property Card 2 -->
+                    <div class="property-card bg-white rounded-xl overflow-hidden shadow-lg border border-gray-100">
+                        <div class="relative">
+                            <img src="https://placehold.co/600x400/f59e0b/ffffff?text=Commercial+Plot" alt="Downtown Loft Apartment" class="w-full h-48 object-cover">
+                            <span class="absolute top-3 right-3 bg-secondary-green text-white text-sm font-bold px-3 py-1 rounded-full shadow-md">COMMERCIAL</span>
+                        </div>
+                        <div class="p-6">
+                            <h4 class="text-2xl font-bold text-gray-900 mb-2">Price on Request</h4>
+                            <p class="text-gray-500 mb-4">Industrial Plot, Govindpura Area, Bhopal</p>
+                            <div class="flex justify-between items-center text-gray-600 border-t pt-4">
+                                <span class="flex items-center space-x-2">
+                                    <svg class="w-5 h-5 text-secondary-green" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16l3.5-2 3.5 2 3.5-2 3.5 2z"></path></svg>
+                                    <span>Plot</span>
+                                </span>
+                                <span class="flex items-center space-x-2">
+                                    <svg class="w-5 h-5 text-secondary-green" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.553-.894L9 7m0 13l6-3.75M9 20v-8m8-4.5h2.25M15 7.5h.01M12 7.5h.01M15 12h.01M12 12h.01M9 12h.01M15 16.5h.01M12 16.5h.01M9 16.5h.01M5 19.5v-10A1 1 0 016 8.5h6a1 1 0 011 1v10"></path></svg>
+                                    <span>Clear Title</span>
+                                </span>
+                                <span class="flex items-center space-x-2">
+                                    <svg class="w-5 h-5 text-secondary-green" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 8h16M4 16h16"></path></svg>
+                                    <span>5,000 sqft</span>
+                                </span>
+                            </div>
+                            <!-- Location Button 2 -->
+                            <a href="#map-section" class="mt-4 block w-full text-center bg-primary-blue text-white py-2 rounded-lg font-semibold hover:bg-blue-700 transition duration-150">
+                                View Location on Map
+                            </a>
+                        </div>
+                    </div>
+
+                    <!-- Property Card 3 -->
+                    <div class="property-card bg-white rounded-xl overflow-hidden shadow-lg border border-gray-100">
+                        <div class="relative">
+                            <img src="WhatsApp Image 2025-01-31 at 13.55.43_e4df7d29.jpg" alt="Secluded Mountain Retreat" class="w-full h-48 object-cover">
+                            <span class="absolute top-3 right-3 bg-primary-blue text-white text-sm font-bold px-3 py-1 rounded-full shadow-md">FOR SALE</span>
+                        </div>
+                        <div class="p-6">
+                            <h4 class="text-2xl font-bold text-gray-900 mb-2">₹40,00,000</h4>
+                            <p class="text-gray-500 mb-4">Residential House, Shahjahanabad, Bhopal</p>
+                            <div class="flex justify-between items-center text-gray-600 border-t pt-4">
+                                <span class="flex items-center space-x-2">
+                                    <svg class="w-5 h-5 text-secondary-green" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0h6m-6 0h-2a1 1 0 00-1 1v2a1 1 0 001 1h10a1 1 0 001-1v-2a1 1 0 00-1-1h-2"></path></svg>
+                                    <span>2 Bed</span>
+                                </span>
+                                <span class="flex items-center space-x-2">
+                                    <svg class="w-5 h-5 text-secondary-green" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0l.969-.372m6.062 0L19 7m-6 0a3 3 0 00-6 0m6 0a3 3 0 01-6 0"></path></svg>
+                                    <span>2 Bath</span>
+                                </span>
+                                <span class="flex items-center space-x-2">
+                                    <svg class="w-5 h-5 text-secondary-green" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 8h16M4 16h16"></path></svg>
+                                    <span>1,200 sqft</span>
+                                </span>
+                            </div>
+                            
+                            
+                <!-- End Listings Grid -->
+
+                <div class="text-center mt-12">
+                    <button class="bg-secondary-green text-white px-8 py-3 rounded-xl text-lg font-semibold hover:bg-opacity-90 transition duration-150 shadow-lg">
+                        View More Bhopal Properties
+                    </button>
+                </div><!-- Location Button 3 -->
+                            <a href="#map-section" class="mt-4 block w-full text-center bg-primary-blue text-white py-2 rounded-lg font-semibold hover:bg-blue-700 transition duration-150">
+                                View Location on Map
+                            </a>
+                        </div>
+                    </div>
+
                 </div>
 
-                <!-- Submit Button -->
-                <button type="submit" class="w-full bg-blue-600 text-white py-3 px-4 rounded-md hover:bg-blue-700 transition duration-200 text-lg font-semibold">Post Property</button>
-            </form>
+            </div>
+        </section>
+         
+                       
+                       
+
+        
+
+    <!-- Footer - Updated with Business Card Contact Details and ID for navigation -->
+    <footer class="bg-gray-800 text-white py-10">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 grid grid-cols-2 md:grid-cols-4 gap-8">
+            <!-- Column 1: Company -->
+            <div>
+                <h5 class="font-bold mb-3 text-lg">Shubh Properties</h5>
+                <ul class="space-y-2 text-sm text-gray-400">
+                    <li><a href="#" class="hover:text-white transition">About Consultant</a></li>
+                    <li><a href="#" class="hover:text-white transition">Services (E-Registry, Deeds)</a></li>
+                    <li><a href="#" class="hover:text-white transition">Blog & Market Insights</a></li>
+                </ul>
+            </div>
+            <!-- Column 2: Legal Services -->
+            <div>
+                <h5 class="font-bold mb-3 text-lg">Key Services</h5>
+                <ul class="space-y-2 text-sm text-gray-400">
+                    <li><a href="#" class="hover:text-white transition">Sale Deed & Agreement</a></li>
+                    <li><a href="#" class="hover:text-white transition">E-Registry Documentation</a></li>
+                    <li><a href="#" class="hover:text-white transition">Property Acquisition</a></li>
+                </ul>
+            </div>
+            <!-- Column 3: Contact Details (From Business Card) - Added ID here -->
+            <div class="col-span-2 md:col-span-1" id="footer-contact">
+                <h5 class="font-bold mb-3 text-lg">Contact Shrayansh Kumar Jain (Shubh)</h5>
+                <p class="text-sm text-gray-400">Email: <a href="mailto:shubh.properties@hotmail.com" class="hover:text-white transition">shubh.properties@hotmail.com</a></p>
+                <p class="text-sm text-gray-400">Phone 1: +91 91318 59720</p>
+                <p class="text-sm text-gray-400">Phone 2: 0755 4339215</p>
+            </div>
+            <!-- Column 4: Location (From Business Card) -->
+            <div class="col-span-2 md:col-span-1">
+                <h5 class="font-bold mb-3 text-lg">Office Location (Bhopal)</h5>
+                <p class="text-sm text-gray-400">Building No.-67, Near Adarsh Hospital,</p>
+                <p class="text-sm text-gray-400">Thana Road, Shahjahanabad,</p>
+                <p class="text-sm text-gray-400">Bhopal (M.P.) 462001</p>
+            </div>
         </div>
-    </main>
-
-    <!-- Footer -->
-    <footer class="bg-white shadow-inner py-4 px-6 mt-auto">
-        <div class="container mx-auto text-center text-gray-500 text-sm max-w-4xl">
-            &copy; 2025 Shubh Properties. All rights reserved.
+        <div class="text-center border-t border-gray-700 pt-6 mt-6">
+            <p class="text-sm text-gray-500">&copy; 2025 Shubh Properties Consultancy. All rights reserved.</p>
         </div>
     </footer>
 
-    <!-- Login Modal -->
-    <div id="login-modal" class="modal">
-        <div class="modal-content">
-            <span class="close-button" id="close-login-modal">&times;</span>
-            <h2 class="text-2xl font-bold text-gray-800 mb-4">Admin Login</h2>
-            <form id="login-form" class="space-y-4">
-                <div>
-                    <label for="username" class="block text-sm font-medium text-gray-700">Username:</label>
-                    <input type="text" id="username" name="username" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2 focus:ring-blue-500 focus:border-blue-500" required>
-                </div>
-                <div>
-                    <label for="password" class="block text-sm font-medium text-gray-700">Password:</label>
-                    <input type="password" id="password" name="password" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2 focus:ring-blue-500 focus:border-blue-500" required>
-                </div>
-                <button type="submit" class="w-full bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 transition duration-200">Login</button>
-                <p id="login-message" class="text-red-500 text-sm mt-2 hidden"></p>
-            </form>
-        </div>
-    </div>
-
-    <!-- Message Modal -->
-    <div id="message-modal" class="modal">
-        <div class="modal-content">
-            <span class="close-button" id="close-message-modal">&times;</span>
-            <p id="message-text" class="text-lg text-gray-800"></p>
-            <button id="ok-button" class="mt-4 bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 transition duration-200">OK</button>
-        </div>
-    </div>
-
-    <script>
-        // Data and State
-        let properties = [
-            {
-                id: 1,
-                imageUrls: ["C:\Users\Arjun\OneDrive\Pictures\WhatsApp Image 2025-02-02 at 15.08.39_1927d0e7.jpg", "https://placehold.co/600x400/C0E0F0/2C3E50?text=Interior"],
-                location: "bhopal",
-                price: "230000",
-                beds: 0,
-                baths: ,
-                sqft: "7,500",
-                description: property comes under the pmawash yojna.",
-                agent: " mr-shivraj",
-                isLiked: false,
-                isPrivate: false, // Default properties are not private
-                phone: "9131859720",
-                mapLink: "https://www.google.com/maps/place/%E0%A6%B6%E0%A6%BE%E0%A6%B9%E0%A6%9C%E0%A6%BE%E0%A6%B9%E0%A6%BE%E0%A6%A8%E0%A6%BE%E0%A6%AC%E0%A6%BE%E0%A6%A6,+%E0%A6%AD%E0%A7%8B%E0%A6%AA%E0%A6%BE%E0%A6%B2,+%E0%A6%AE%E0%A6%A7%E0%A7%8D%E0%A6%AF%E0%A6%AA%E0%A7%8D%E0%A6%B0%E0%A6%A6%E0%A7%87%E0%A6%B6+462001/@23.2720432,77.3954347,1604m/data=!3m2!1e3!4b1!4m6!3m5!1s0x397c6814d40aa8b3:0xc9640979841b46b5!8m2!3d23.2731795!4d77.398978!16s%2Fg%2F11cfj9x_q?entry=ttu&g_ep=EgoyMDI1MTAwMS4wIKXMDSoASAFQAw%3D%3D"
-            },
-            {
-                id: 2,
-                imageUrls: ["https://placehold.co/600x400/F0F8FF/2C3E50?text=Cozy+Family+Home"],
-                location: "Suburban Greenbelt, TX",
-                price: "$450,000",
-                beds: 4,
-                baths: 3,
-                sqft: "2,800",
-                description: "Charming family home in a quiet, tree-lined neighborhood. Spacious backyard, top-rated schools nearby.",
-                agent: "Greenbelt Realty",
-                isLiked: false,
-                isPrivate: false, // Default properties are not private
-                phone: "+1234567890",
-                mapLink: "https://goo.gl/maps/c9xXw8g3Z4A3"
-            },
-            {
-                id: 3,
-                imageUrls: ["https://placehold.co/600x400/FFF0F5/2C3E50?text=Downtown+Loft"],
-                location: "Arts District, NYC",
-                price: "$1,800,000",
-                beds: 2,
-                baths: 2,
-                sqft: "1,600",
-                description: "Vibrant downtown loft with exposed brick, high ceilings, and panoramic city views. Steps away from galleries and restaurants.",
-                agent: "Urban Living Co.",
-                isLiked: false,
-                isPrivate: false, // Default properties are not private
-                phone: "+1234567890",
-                mapLink: "https://goo.gl/maps/d0yYy9h4A5B4"
-            }
-        ];
-        let isAdminLoggedIn = false;
-
-        // Get elements
-        const homeView = document.getElementById('home-view');
-        const postView = document.getElementById('post-view');
-        const homeLink = document.getElementById('home-link');
-        const postLink = document.getElementById('post-link');
-        const adminLoginBtn = document.getElementById('admin-login-btn');
-        const adminLogoutBtn = document.getElementById('admin-logout-btn');
-        const loginModal = document.getElementById('login-modal');
-        const closeLoginModal = document.getElementById('close-login-modal');
-        const loginForm = document.getElementById('login-form');
-        const loginMessage = document.getElementById('login-message');
-        const postPropertyForm = document.getElementById('post-property-form');
-        const imageUpload = document.getElementById('imageUpload');
-        const imagePreviewContainer = document.getElementById('image-preview-container');
-
-        const messageModal = document.getElementById('message-modal');
-        const messageText = document.getElementById('message-text');
-        const closeMessageModal = document.getElementById('close-message-modal');
-        const okButton = document.getElementById('ok-button');
-
-        let uploadedImageUrls = []; // Array to store data URLs of uploaded images
-
-        // Function to show custom message modal
-        function showMessage(message) {
-            messageText.textContent = message;
-            messageModal.style.display = 'flex';
-        }
-
-        // Function to render the property feed
-        function renderProperties() {
-            const propertyFeed = document.getElementById('home-view');
-            propertyFeed.innerHTML = ''; // Clear existing content
-
-            // Filter properties based on admin status
-            const propertiesToRender = isAdminLoggedIn
-                ? properties // Show all properties if admin is logged in
-                : properties.filter(p => !p.isPrivate); // Only show non-private properties for regular users
-
-            propertiesToRender.forEach(property => {
-                const propertyCard = document.createElement('div');
-                propertyCard.className = 'bg-white rounded-lg shadow-md overflow-hidden transform transition duration-300 hover:scale-[1.01]';
-                
-                let deleteButtonHtml = '';
-                if (isAdminLoggedIn) {
-                    deleteButtonHtml = `
-                        <button class="delete-button flex items-center text-red-600 hover:text-red-800 transition duration-200 focus:outline-none" data-id="${property.id}">
-                            <svg class="w-6 h-6 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
-                            </svg>
-                            <span class="font-medium">Delete</span>
-                        </button>
-                    `;
-                }
-
-                // Create image slider HTML
-                let sliderHtml = '';
-                if (property.imageUrls && property.imageUrls.length > 0) {
-                    sliderHtml = `
-                        <div class="slider-container w-full h-64 relative">
-                            <div class="slider-images h-full" data-current-index="0">
-                                ${property.imageUrls.map(url => `
-                                    <img src="${url}" class="min-w-full h-full object-cover" onerror="this.onerror=null;this.src='https://placehold.co/600x400/cccccc/333333?text=Image+Not+Found';">
-                                `).join('')}
-                            </div>
-                            ${property.imageUrls.length > 1 ? `
-                                <div class="slider-nav">
-                                    <button class="prev absolute left-2 top-1/2 -translate-y-1/2 bg-gray-800 bg-opacity-50 text-white p-2 rounded-full hover:bg-opacity-75 focus:outline-none">
-                                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path></svg>
-                                    </button>
-                                    <button class="next absolute right-2 top-1/2 -translate-y-1/2 bg-gray-800 bg-opacity-50 text-white p-2 rounded-full hover:bg-opacity-75 focus:outline-none">
-                                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
-                                    </button>
-                                </div>
-                            ` : ''}
-                        </div>
-                    `;
-                } else {
-                    sliderHtml = `
-                        <div class="w-full h-64 bg-gray-200 flex items-center justify-center overflow-hidden">
-                            <img src="https://placehold.co/600x400/cccccc/333333?text=Image+Not+Found" alt="Placeholder" class="w-full h-full object-cover">
-                        </div>
-                    `;
-                }
-
-                let mapButtonHtml = '';
-                if (property.mapLink) {
-                    mapButtonHtml = `
-                        <a href="${property.mapLink}" target="_blank" class="flex items-center text-gray-600 hover:text-blue-500 transition duration-200 focus:outline-none">
-                            <svg class="w-6 h-6 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path>
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path>
-                            </svg>
-                            <span class="font-medium">View on Map</span>
-                        </a>
-                    `;
-                }
-                
-                // Conditionally render beds and baths if they exist in the property object
-                let bedsAndBathsHtml = '';
-                if (property.beds && property.baths) {
-                     bedsAndBathsHtml = `
-                        <div class="flex items-center text-gray-600 text-sm mb-4">
-                            <span class="mr-4 flex items-center">
-                                <svg class="w-4 h-4 mr-1 text-gray-500" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path d="M10 2a2 2 0 00-2 2v1H5a2 2 0 00-2 2v2a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-3V4a2 2 0 00-2-2h-2zM5 9h10v6a2 2 0 01-2 2H7a2 2 0 01-2-2V9z"></path></svg>
-                                ${property.beds} Beds
-                            </span>
-                            <span class="mr-4 flex items-center">
-                                <svg class="w-4 h-4 mr-1 text-gray-500" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path d="M10 2a2 2 0 00-2 2v1H5a2 2 0 00-2 2v2a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-3V4a2 2 0 00-2-2h-2zM5 9h10v6a2 2 0 01-2 2H7a2 2 0 01-2-2V9z"></path></svg>
-                                ${property.baths} Baths
-                            </span>
-                            <span class="flex items-center">
-                                <svg class="w-4 h-4 mr-1 text-gray-500" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path d="M9 2a1 1 0 000 2h2a1 1 0 100-2H9z"></path><path fill-rule="evenodd" d="M4 5a2 2 0 012-2 3 3 0 003 3h2a3 3 0 003-3 2 2 0 012 2v11a2 2 0 01-2 2H6a2 2 0 01-2-2V5zm3 4a1 1 0 000 2h.01a1 1 0 100-2H7zm3 0a1 1 0 000 2h.01a1 1 0 100-2H10zm3 0a1 1 0 000 2h.01a1 1 0 100-2H13zm-3 4a1 1 0 000 2h.01a1 1 0 100-2H10zm3 0a1 1 0 000 2h.01a1 1 0 100-2H13z" clip-rule="evenodd"></path></svg>
-                                ${property.sqft} sqft
-                            </span>
-                        </div>
-                     `;
-                } else {
-                     bedsAndBathsHtml = `
-                        <div class="flex items-center text-gray-600 text-sm mb-4">
-                            <span class="flex items-center">
-                                <svg class="w-4 h-4 mr-1 text-gray-500" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path d="M9 2a1 1 0 000 2h2a1 1 0 100-2H9z"></path><path fill-rule="evenodd" d="M4 5a2 2 0 012-2 3 3 0 003 3h2a3 3 0 003-3 2 2 0 012 2v11a2 2 0 01-2 2H6a2 2 0 01-2-2V5zm3 4a1 1 0 000 2h.01a1 1 0 100-2H7zm3 0a1 1 0 000 2h.01a1 1 0 100-2H10zm3 0a1 1 0 000 2h.01a1 1 0 100-2H13zm-3 4a1 1 0 000 2h.01a1 1 0 100-2H10zm3 0a1 1 0 000 2h.01a1 1 0 100-2H13z" clip-rule="evenodd"></path></svg>
-                                ${property.sqft} sqft
-                            </span>
-                        </div>
-                     `;
-                }
-
-                propertyCard.innerHTML = `
-                    ${sliderHtml}
-                    <div class="p-5">
-                        <h2 class="text-xl font-semibold text-gray-800 mb-2">${property.location}</h2>
-                        <p class="text-2xl font-bold text-blue-600 mb-3">${property.price}</p>
-                        ${bedsAndBathsHtml}
-                        <p class="text-gray-700 text-base mb-4">${property.description}</p>
-                        <p class="text-gray-500 text-sm mb-4">Listed by: <span class="font-medium text-gray-700">${property.agent}</span></p>
-                        <div class="flex items-center space-x-4">
-                            <button class="like-button flex items-center text-gray-600 hover:text-red-500 transition duration-200 focus:outline-none" data-id="${property.id}">
-                                <svg class="w-6 h-6 mr-1 ${property.isLiked ? 'text-red-500' : ''}" fill="${property.isLiked ? 'currentColor' : 'none'}" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 22.364l7.682-7.682a4.5 4.5 0 000-6.364 4.5 4.5 0 00-6.364 0L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"></path>
-                                </svg>
-                                <span class="font-medium">Like</span>
-                            </button>
-                            <button class="share-button flex items-center text-gray-600 hover:text-blue-500 transition duration-200 focus:outline-none">
-                                <svg class="w-6 h-6 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.684 13.342C8.882 13.07 9 12.712 9 12c0-.312-.118-.61-.316-.858m0 0L4.5 7.5m3.184 4.842A2.25 2.25 0 0012 15c.898 0 1.767-.36 2.384-.982m0 0l3.184-3.184m-3.184 3.184A2.25 2.25 0 0012 9c-.898 0-1.767.36-2.384.982m0 0L4.5 16.5m3.184-3.184A2.25 2.25 0 0112 10.5c.898 0 1.767.36 2.384.982m0 0l3.184-3.184M12 12h.01"></path>
-                                </svg>
-                                <span class="font-medium">Share</span>
-                            </button>
-                            <a href="https://wa.me/${property.phone}" target="_blank" class="flex items-center text-gray-600 hover:text-green-500 transition duration-200 focus:outline-none">
-                                <svg class="w-6 h-6 mr-1" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                                    <path d="M12.04 2.164c-5.464 0-9.897 4.433-9.897 9.897C2.143 17.525 5.53 20.91 9.897 22.868L10 22.868l1.096 1.056c.143.137.333.212.528.212.195 0 .385-.075.528-.212l1.096-1.056c.105-.1.21-.19.31-.284A9.89 9.89 0 0012.04 2.164M12.04 0c-6.617 0-12 5.383-12 12s5.383 12 12 12c1.782 0 3.492-.472 5.01-1.353l3.66 1.053c.174.05.352.07.53.07.414 0 .75-.336.75-.75v-1.125a2.25 2.25 0 00-.75-1.68c-1.28-1.1-2.9-1.78-4.66-1.78-1.77 0-3.39.68-4.66 1.78a2.25 2.25 0 00-.75 1.68v1.125c0 .414.336.75.75.75.178 0 .356-.02.53-.07l3.66-1.053c1.518.88 3.228 1.353 5.01 1.353C18.657 24 24 18.617 24 12S18.617 0 12.04 0zM12.04 3.664c4.6 0 8.333 3.733 8.333 8.333s-3.733 8.333-8.333 8.333-8.333-3.733-8.333-8.333 3.733-8.333 8.333-8.333z" fill-rule="evenodd" clip-rule="evenodd" fill="currentColor"/>
-                                </svg>
-                                <span class="font-medium">WhatsApp</span>
-                            </a>
-                            ${mapButtonHtml}
-                            ${deleteButtonHtml}
-                        </div>
-                    </div>
-                `;
-                propertyFeed.appendChild(propertyCard);
-            });
-            // Add event listeners for like and share buttons after rendering
-            addEventListeners();
-            setupSliders(); // Set up sliders for new property cards
-        }
-
-        // Setup image sliders for each property card
-        function setupSliders() {
-            document.querySelectorAll('.slider-container').forEach(container => {
-                const slider = container.querySelector('.slider-images');
-                if (!slider) return;
-                const prevBtn = container.querySelector('.prev');
-                const nextBtn = container.querySelector('.next');
-                const totalImages = slider.children.length;
-                let currentIndex = 0;
-
-                const updateSlider = () => {
-                    slider.style.transform = `translateX(-${currentIndex * 100}%)`;
-                };
-
-                if (prevBtn) {
-                    prevBtn.addEventListener('click', () => {
-                        currentIndex = (currentIndex > 0) ? currentIndex - 1 : totalImages - 1;
-                        updateSlider();
-                    });
-                }
-                if (nextBtn) {
-                    nextBtn.addEventListener('click', () => {
-                        currentIndex = (currentIndex < totalImages - 1) ? currentIndex + 1 : 0;
-                        updateSlider();
-                    });
-                }
-            });
-        }
-
-
-        // Add event listeners for like, share, and delete buttons
-        function addEventListeners() {
-            document.querySelectorAll('.like-button').forEach(button => {
-                button.addEventListener('click', (event) => {
-                    const propertyId = parseInt(event.currentTarget.dataset.id);
-                    const property = properties.find(p => p.id === propertyId);
-                    if (property) {
-                        property.isLiked = !property.isLiked; // Toggle like status
-                        renderProperties(); // Re-render to update UI
-                    }
-                });
-            });
-
-            document.querySelectorAll('.share-button').forEach(button => {
-                button.addEventListener('click', () => {
-                    showMessage('Share functionality coming soon!');
-                });
-            });
-
-            document.querySelectorAll('.delete-button').forEach(button => {
-                button.addEventListener('click', (event) => {
-                    const propertyIdToDelete = parseInt(event.currentTarget.dataset.id);
-                    properties = properties.filter(p => p.id !== propertyIdToDelete);
-                    renderProperties(); // Re-render the list
-                    showMessage('Property deleted successfully!');
-                });
-            });
-        }
-
-        // Show/Hide views based on button click
-        function showView(viewId) {
-            homeView.classList.add('hidden');
-            postView.classList.add('hidden');
-
-            const viewToShow = document.getElementById(viewId);
-            if (viewToShow) {
-                viewToShow.classList.remove('hidden');
-            }
-        }
-
-        // Handle Post Property form submission
-        postPropertyForm.addEventListener('submit', (event) => {
-            event.preventDefault(); // Prevent default form submission
-
-            if (uploadedImageUrls.length === 0) {
-                showMessage('Please upload at least one image.');
-                return;
-            }
-
-            const newProperty = {
-                id: properties.length > 0 ? Math.max(...properties.map(p => p.id)) + 1 : 1,
-                imageUrls: uploadedImageUrls,
-                location: document.getElementById('locality').value + ', ' + document.getElementById('city').value,
-                price: document.getElementById('price').value,
-                sqft: document.getElementById('area').value || 'N/A',
-                description: document.getElementById('description').value || 'No description provided.',
-                agent: document.getElementById('fullName').value || 'Agent Name',
-                isLiked: false,
-                isPrivate: true, // This is the new property added for admin-only viewing
-                phone: document.getElementById('phone').value,
-                mapLink: document.getElementById('mapLink').value // New field for Google Maps link
-            };
-
-            properties.push(newProperty);
-            postPropertyForm.reset();
-            imagePreviewContainer.innerHTML = '';
-            imagePreviewContainer.classList.add('hidden');
-            uploadedImageUrls = []; // Clear array for next upload
-            
-            showMessage('Your property has been submitted successfully! It is now visible on the home page.');
-            showView('home-view');
-            renderProperties();
-        });
-
-        // Event listener for image file input change
-        imageUpload.addEventListener('change', (event) => {
-            const files = event.target.files;
-            uploadedImageUrls = []; // Reset array
-            imagePreviewContainer.innerHTML = ''; // Clear previews
-
-            if (files.length > 4) {
-                showMessage('You can only upload a maximum of 4 images.');
-                imageUpload.value = ''; // Clear file input
-                return;
-            }
-            if (files.length > 0) {
-                imagePreviewContainer.classList.remove('hidden');
-                Array.from(files).forEach(file => {
-                    const reader = new FileReader();
-                    reader.onload = function(e) {
-                        uploadedImageUrls.push(e.target.result);
-                        const previewItem = document.createElement('div');
-                        previewItem.className = 'image-preview-item';
-                        previewItem.innerHTML = `<img src="${e.target.result}" alt="Property Preview">`;
-                        imagePreviewContainer.appendChild(previewItem);
-                    };
-                    reader.readAsDataURL(file);
-                });
-            } else {
-                imagePreviewContainer.classList.add('hidden');
-            }
-        });
-
-        // Event listeners for navigation buttons
-        homeLink.addEventListener('click', () => {
-            showView('home-view');
-            renderProperties();
-        });
-
-        postLink.addEventListener('click', () => {
-            showView('post-view');
-        });
-
-        // Event listeners for login/logout
-        adminLoginBtn.addEventListener('click', () => {
-            loginModal.style.display = 'flex';
-        });
-
-        closeLoginModal.addEventListener('click', () => {
-            loginModal.style.display = 'none';
-        });
-        
-        loginForm.addEventListener('submit', (event) => {
-            event.preventDefault();
-            const username = document.getElementById('username').value;
-            const password = document.getElementById('password').value;
-
-            if (username === 'admin' && password === 'admin123') {
-                isAdminLoggedIn = true;
-                loginModal.style.display = 'none';
-                showMessage('Logged in as Admin successfully!');
-                updateAdminUI();
-                showView('home-view');
-                renderProperties();
-            } else {
-                loginMessage.textContent = 'Invalid username or password.';
-                loginMessage.classList.remove('hidden');
-            }
-        });
-
-        adminLogoutBtn.addEventListener('click', () => {
-            isAdminLoggedIn = false;
-            showMessage('Logged out successfully!');
-            updateAdminUI();
-            showView('home-view');
-            renderProperties();
-        });
-
-        function updateAdminUI() {
-            if (isAdminLoggedIn) {
-                adminLoginBtn.classList.add('hidden');
-                adminLogoutBtn.classList.remove('hidden');
-                postLink.classList.remove('hidden');
-            } else {
-                adminLoginBtn.classList.remove('hidden');
-                adminLogoutBtn.classList.add('hidden');
-                postLink.classList.add('hidden');
-            }
-        }
-
-        // Event listeners for message modal
-        closeMessageModal.addEventListener('click', () => {
-            messageModal.style.display = 'none';
-        });
-
-        okButton.addEventListener('click', () => {
-            messageModal.style.display = 'none';
-        });
-
-        // Initial render when the page loads
-        document.addEventListener('DOMContentLoaded', () => {
-            renderProperties();
-            updateAdminUI();
-        });
-    </script>
 </body>
 </html>
 
